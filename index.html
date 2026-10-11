@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pensei - Um enigma começa aqui.">
+  <!-- Favicon placeholder: substitua por favicon.ico quando tiver -->
+  <link rel="icon" href="data:,&lt;!-- favicon -->">
+  <title>Pensei</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #121212;
+      --panel: #1a1a1a;
+      --border: rgba(255,255,255,.06);
+      --text: #f0f0f0;
+      --muted: #8a8a8a;
+      --accent: #5e6ff0;
+      --accent-glow: #5e6ff040;
+      --glitch: #f700aa;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', Courier, monospace;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+    /* Subtle scanline texture (CSS, no image) */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.03) 2px,
+        rgba(0,0,0,.03) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      position: relative;
+    }
+    .terminal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+    .line {
+      margin: 0.3rem 0;
+      letter-spacing: -0.02em;
+      position: relative;
+    }
+    .line.prompt::before {
+      content: "> ";
+      color: var(--accent);
+    }
+    .line.title {
+      font-size: 1.8rem;
+      letter-spacing: 0.2em;
+      color: var(--glitch);
+      text-align: center;
+      margin: 1rem 0;
+      position: relative;
+    }
+    .line.title::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scaleX(1.2);
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glitch), transparent);
+      animation: scan-highlight 3s infinite;
+    }
+    @keyframes scan-highlight {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .glitch {
+      position: relative;
+      color: var(--glitch);
+      text-shadow: 0 0 5px var(--glitch), 0 0 10px var(--glitch);
+    }
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+    .glitch::before {
+      left: 2px;
+      text-shadow: -2px 0 #ff0066;
+      clip: rect(0, 900px, 0, 0);
+      animation: glitch-top 2s infinite linear alternate-reverse;
+    }
+    .glitch::after {
+      left: -2px;
+      text-shadow: -2px 0 #ff0066;
+      clip: rect(0, 900px, 0, 0);
+      animation: glitch-bottom 3s infinite linear alternate-reverse;
+    }
+    @keyframes glitch-top {
+      0% { clip: rect(24px, 9999px, 0, 0); }
+      10% { clip: rect(10px, 9999px, 40px, 0); }
+      20% { clip: rect(30px, 9999px, 50px, 0); }
+      30% { clip: rect(0, 9999px, 70px, 0); }
+      100% { clip: rect(0, 9999px, 0, 0); }
+    }
+    @keyframes glitch-bottom {
+      0% { clip: rect(80px, 9999px, 0, 0); }
+      10% { clip: rect(0, 9999px, 9999px, 0); }
+      20% { clip: rect(50px, 9999px, 70px, 0); }
+      30% { clip: rect(0, 9999px, 0, 0); }
+      100% { clip: rect(9999px, 9999px, 9999px, 0); }
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    .input-area {
+      margin-top: 2rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+    input {
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.8rem 1rem;
+      font-family: inherit;
+      font-size: 1rem;
+      border-radius: 4px;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.8rem 2rem;
+      font-family: inherit;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all .2s;
+    }
+    button:hover {
+      box-shadow: 0 0 20px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 2rem 1rem; }
+      .line.title { font-size: 1.2rem; letter-spacing: 0.1em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="terminal">
+      <div class="line title">PENSEI</div>
+      <div class="line prompt">Inicializando...</div>
+      <div class="line prompt">Carregando protocolo Enigma v1.0</div>
+      <div class="line hint">Uma jornada de mistério começa aqui.</div>
+    </div>
+
+    <div class="terminal">
+      <div class="line prompt">Conexão estabelecida.</div>
+      <div class="line prompt">Aguardando autenticação...</div>
+      <div class="line prompt glitch" data-text="DIGITE E INICIE">DIGITE E INICIE</div>
+    </div>
+
+    <div class="input-area">
+      <form id="entry-form">
+        <input type="text" id="entry" autocomplete="off" placeholder="Digite algo para começar..." autofocus>
+        <button type="submit">Iniciar</button>
+      </form>
+    </div>
+
+    <div class="footer">
+      <div class="line">pensei.github.io</div>
+      <div class="line hint">Personal. Experimental.</div>
+    </div>
+  </div>
+
+  <script>
+    // Auto-glitches the title every few seconds for ambiance
+    const glitchEls = document.querySelectorAll('.glitch');
+    setInterval(() => {
+      glitchEls.forEach(el => {
+        el.style.textShadow = `
+          ${Math.random()*4-2}px ${Math.random()*4-2}px 0 ${getComputedStyle(document.documentElement).getPropertyValue('--glitch')},
+          ${Math.random()*4-2}px ${Math.random()*4-2}px 0 ${getComputedStyle(document.documentElement).getPropertyValue('--glitch')}
+        `;
+      });
+    }, 50 + Math.random() * 200);
+
+    // Terminal-style typing effect on prompt
+    const prompts = document.querySelectorAll('.prompt');
+    let idx = 0;
+    const type = () => {
+      if (idx >= prompts.length) return;
+      const txt = prompts[idx].textContent.trim();
+      prompts[idx].textContent = '';
+      let i = 0;
+      const t = setInterval(() => {
+        if (i < txt.length) { prompts[idx].textContent += txt[i]; i++; }
+        else { clearInterval(t); idx++; setTimeout(type, 200 + Math.random()*400); }
+      }, 25 + Math.random()*20);
+    };
+    // Don't auto-run typing on small screens (perf) - just show prompt
+    if (window.innerWidth > 600) type();
+
+    document.getElementById('entry-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = document.getElementById('entry').value.trim();
+      if (!val) return;
+      // This is level 1 — just logs for now, real enigma will handle later
+      console.log('[PENSEI] Entrada recebida:', val);
+      alert('Quebra de código detectada. O enigma real ainda não foi configurado — continue explorando.');
+    });
+
+    // Easter egg: 8 rapid keystrokes triggers a flash
+    let keys = 0;
+    document.addEventListener('keydown', () => {
+      keys++;
+      if (keys === 8) {
+        document.body.style.background = '#000';
+        document.body.style.transition = 'background .3s';
+        setTimeout(() => { document.body.style.background = ''; }, 300);
+        keys = 0;
+      }
+    });
+  </script>
+</body>
+</html>
