@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Pensei - Enigma 001. Derrote a batalha 2v2 para prosseguir.">
+<title>PENSEI • Enigma 001 — Batalha 2v2</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="battle.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="hud">
+    <div class="glitch" data-text="PENSEI">PENSEI</div>
+    <div class="tag">ENIGMA 001 — BATALHA 2v2</div>
+  </header>
+
+  <section class="teams">
+    <div class="team team-player" id="playerTeam">
+      <div class="slot">
+        <span class="name">Indeedee</span>
+        <span class="item">Choice Scarf</span>
+        <div class="hp"><div class="bar full" id="hp-p1"></div></div>
+      </div>
+      <div class="slot">
+        <span class="name">Ditto</span>
+        <span class="item">—</span>
+        <div class="hp"><div class="bar full" id="hp-p2"></div></div>
+      </div>
+    </div>
+
+    <div class="versus">VS</div>
+
+    <div class="team team-opp" id="oppTeam">
+      <div class="slot">
+        <span class="name">Indeedee</span>
+        <span class="item">Choice Specs</span>
+        <div class="hp"><div class="bar full" id="hp-o1"></div></div>
+      </div>
+      <div class="slot">
+        <span class="name">Hatterene</span>
+        <span class="item">Magic Bounce</span>
+        <div class="hp"><div class="bar full" id="hp-o2"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="log-wrap">
+    <pre class="battle-log" id="log">&gt;&gt;&gt; SISTEMA PENSEI // ENIGMA 001
+&gt;&gt;&gt; Batalha 2v2 inicializada. Turno único.
+&gt;&gt;&gt; Sua equipe: Indeedee (F, Choice Scarf) e Ditto.
+&gt;&gt;&gt; Adversários: Indeedee (M, Choice Specs) e Hatterene (Magic Bounce).
+&gt;&gt;&gt; Objetivo: derrotar os dois adversários neste turno.
+&gt;&gt;&gt; Apenas uma sequência de movimentos leva à vitória.</pre>
+  </section>
+
+  <section class="actions" id="actions">
+    <button class="btn move" id="btnTrick">Indeedee → Trick no Ditto</button>
+    <button class="btn move" id="btnTransformIndeedee">Ditto → Transform (Indeedee)</button>
+    <button class="btn move" id="btnTransformHatterene">Ditto → Transform (Hatterene)</button>
+    <button class="btn move final" id="btnDazzling" disabled>Ditto → Dazzling Gleam</button>
+  </section>
+
+  <section class="result hidden" id="result">
+    <h2>VITÓRIA</h2>
+    <p>Os dois adversários foram derrotados.</p>
+    <p class="hint">A recompensa está escondida na imagem.</p>
+    <a id="rewardLink" class="reward" href="#" target="_blank" rel="noopener"></a>
+    <div class="hint-small">Digite a senha encontrada na imagem para avançar.</div>
+    <input type="text" id="senha" class="senha-input" placeholder="senha..." autocomplete="off" spellcheck="false" inputmode="text">
+    <button class="btn" id="btnSenha">Enviar</button>
+    <div class="erro hidden" id="erroSenha">Senha incorreta.</div>
+  </section>
+
+  <section class="result defeated hidden" id="defeated">
+    <h2>DERROTA</h2>
+    <p>A sequência falhou. Recomece o enigma e descubra o caminho correto.</p>
+    <button class="btn" id="btnRetry">Tentar novamente</button>
+  </section>
+</div>
+
+<script src="battle.js"></script>
+</body>
+</html>
